@@ -14,7 +14,7 @@ class Product(models.Model):
 
 
 class ProductOption(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="product_options")
     size = models.CharField(max_length = 50, default= '')
     color = models.CharField(max_length = 20, default= '')
 

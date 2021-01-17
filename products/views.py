@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from .models import Product
-from .serializers import ProductSerializer
+from .models import Product, ProductOption
+from .serializers import ProductSerializer, ProductOptionSerializer
 from django.http import Http404, HttpResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -8,7 +8,7 @@ from rest_framework import status
 
 # Create your views here.
 
-class ProductLisView(APIView):
+class ProductListView(APIView):
     
     def get(self, request):
         products = Product.objects.all()
@@ -50,3 +50,19 @@ class ProductDetailView(APIView):
         product = self.get_object(id)
         product.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ProductOptionListView(APIView):
+    
+    def get(self, request):
+        products = ProductOption.objects.all()
+        serializer = ProductOptionSerializer(products, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = ProductOptionSerializer(data = request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
